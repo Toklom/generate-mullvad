@@ -1,0 +1,32 @@
+import string
+import secrets
+import time
+import subprocess
+
+def gen():
+  chars = string.digits
+  key = ''.join(secrets.choice(chars) for i in range(32))
+  return key
+def check(key):
+  try:
+    result = subprocess.run(
+      ['Mullvad VPN', '--generate-config', key],
+      stdout=subprocess.PIPE,
+      stderr=subprocess.PIPE
+    )
+    if result.returncode == 0:
+      return True
+  except FileNotFoundError:
+    print("")
+  return False
+def main():
+  while True:
+    key = gen()
+    if check(key):
+      print(f"Рабочий ключ: {key}")
+    else:
+      print("Нерабочий ключ:", key)
+
+if __name__ == "__main__":
+  main()
+time.sleep(30)
